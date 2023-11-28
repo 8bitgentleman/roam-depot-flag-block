@@ -1,45 +1,73 @@
 const panelConfig = {
-  tabTitle: "Test Ext 1",
+  tabTitle: "Flag Block",
   settings: [
-      {id:          "button-setting",
-       name:        "Button test",
-       description: "tests the button",
-       action:      {type:    "button",
-                     onClick: (evt) => { console.log("Button clicked!"); },
-                     content: "Button"}},
-      {id:          "switch-setting",
-       name:        "Switch Test",
-       description: "Test switch component",
-       action:      {type:     "switch",
-                     onChange: (evt) => { console.log("Switch!", evt); }}},
       {id:     "input-setting",
-       name:   "Input test",
+       name:   "Flag icon",
        action: {type:        "input",
-                placeholder: "placeholder",
+                placeholder: "⚑ ",
                 onChange:    (evt) => { console.log("Input Changed!", evt); }}},
-      {id:     "select-setting",
-       name:   "Select test",
-       action: {type:     "select",
-                items:    ["one", "two", "three"],
-                onChange: (evt) => { console.log("Select Changed!", evt); }}}
   ]
 };
+function flagBlock(uid) {
+  let tag = "#[[.flag-block]]"
+  //let uid = 'A2COTgrNv'
+  let query = `[:find ?s .
+                      :in $ ?uid
+                      :where 
+            [?e :block/uid ?uid]
+            [?e :block/string ?s]
+            ]`;
 
+  let block_string = window.roamAlphaAPI.q(query,uid);
+  console.log(block_string);
+
+  if (block_string.includes(tag)){
+    block_string = block_string.replace(tag,'');
+    window.roamAlphaAPI.updateBlock({"block": 
+                {"uid": uid,
+                "string": block_string}})
+  }else{
+    block_string = block_string + " " + tag
+    window.roamAlphaAPI.updateBlock({"block": 
+                {"uid": uid,
+                "string": block_string}})
+  }
+
+  
+}
 async function onload({extensionAPI}) {
   // set defaults if they dont' exist
-  if (!extensionAPI.settings.get('data')) {
-      await extensionAPI.settings.set('data', "01");
-  }
-  extensionAPI.settings.panel.create(panelConfig);
 
-  console.log("load example plugin");
+  extensionAPI.settings.panel.create(panelConfig);
+  
+  extensionAPI.setting.ui.commandPalette.addCommand(
+    {label: 'Flag Block', 
+      callback: () => {
+        let block = window.roamAlphaAPI.ui.getFocusedBlock();
+
+      if (block != null){
+        flagBlock(block['block-uid'])
+      }  
+      },
+    "disable-hotkey": false,
+    // this is the default hotkey, and can be customized by the user. 
+    // in most cases, you DO NOT want to be setting a default hotkey
+    "default-hotkey": "ctrl-shift-f"})
+  roamAlphaAPI.ui.blockContextMenu.addCommand({
+    label: "Flag Block",
+    callback: (e) => flagBlock(e['block-uid'])
+  })
+  console.log("load flag block plugin");
 }
 
 function onunload() {
-  console.log("unload example plugin");
+  roamAlphaAPI.ui.blockContextMenu.removeCommand({
+    label: "Flag Block"
+  })
+  console.log("unload flag block plugin");
 }
 
 export default {
-onload,
-onunload
+  onload,
+  onunload
 };
