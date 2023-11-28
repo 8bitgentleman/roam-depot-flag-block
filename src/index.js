@@ -41,7 +41,12 @@ async function onload({extensionAPI}) {
 
   extensionAPI.settings.panel.create(panelConfig);
   
-  extensionAPI.settings.ui.commandPalette.addCommand(
+  window.roamAlphaAPI.ui.blockContextMenu.addCommand({
+    label: "Flag Block",
+    callback: (e) => flagBlock(e['block-uid'])
+  })
+
+  extensionAPI.ui.commandPalette.addCommand(
     {label: 'Flag Block', 
       callback: () => {
         let block = window.roamAlphaAPI.ui.getFocusedBlock();
@@ -54,15 +59,14 @@ async function onload({extensionAPI}) {
     // this is the default hotkey, and can be customized by the user. 
     // in most cases, you DO NOT want to be setting a default hotkey
     "default-hotkey": "ctrl-shift-f"})
-  roamAlphaAPI.ui.blockContextMenu.addCommand({
-    label: "Flag Block",
-    callback: (e) => flagBlock(e['block-uid'])
-  })
+
+  
+
   console.log("load flag block plugin");
 }
 
 function onunload() {
-  roamAlphaAPI.ui.blockContextMenu.removeCommand({
+  window.roamAlphaAPI.ui.blockContextMenu.removeCommand({
     label: "Flag Block"
   })
   console.log("unload flag block plugin");
