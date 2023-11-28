@@ -35,6 +35,7 @@ function flagBlock(uid) {
 
   
 }
+
 async function onload({extensionAPI}) {
   // set defaults if they dont' exist
 

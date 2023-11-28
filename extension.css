@@ -1,0 +1,14 @@
+span>rm-page-ref[data-link-title=".flag-block"],
+rm-page-ref[data-tag=".flag-block"],
+.rm-block__self:hover .rm-page-ref[data-tag^=".flag-block"]{
+   display:none !important;
+
+}
+
+.flag-block:not([data-page-links*="query"])>.rm-block-main>.roam-block::before,
+span[data-original-page-links*=".flag-block"]:not([data-page-links*="query"])::before{
+  content: '⚑ ';
+  color: transparent !important;
+    text-shadow: 0 0 0 #37AC94;
+}
+
