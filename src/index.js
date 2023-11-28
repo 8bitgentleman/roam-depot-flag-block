@@ -41,7 +41,7 @@ async function onload({extensionAPI}) {
 
   extensionAPI.settings.panel.create(panelConfig);
   
-  extensionAPI.setting.ui.commandPalette.addCommand(
+  extensionAPI.settings.ui.commandPalette.addCommand(
     {label: 'Flag Block', 
       callback: () => {
         let block = window.roamAlphaAPI.ui.getFocusedBlock();
